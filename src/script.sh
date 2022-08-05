@@ -8,9 +8,11 @@ tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
 source /home/dnanexus/license_setup.sh # run license setup script
 
-export SENTIEON_LICENSE=LICENSE_DIR/LICENSE_FILE.lic
+export SENTIEON_INSTALL_DIR=/usr/local/sentieon-genomics-*
 
-SENTIEON_INSTALL_DIR=/usr/local/sentieon-genomics-*
+SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
+
+export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 # resources folder will not exist on worker, so removed here.
 
