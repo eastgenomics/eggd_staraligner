@@ -3,6 +3,8 @@
 set -exo pipefail #if any part goes wrong, job will fail
 
 dx-download-all-inputs # download inputs from json
+#dx download "$left_fastq" -o left_fastq
+#dx download "$right_fastq" -o right_fastq
 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local # unpack tar
 
@@ -13,6 +15,20 @@ export SENTIEON_INSTALL_DIR=/usr/local/sentieon-genomics-*
 SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 
 export PATH="$SENTIEON_BIN_DIR:$PATH"
+
+NUMBER_THREADS=1
+echo $right_fq
+echo $sentieon_reference_genome
+STAR_REFERENCE=$sentieon_reference_genome
+REFERENCE=$sentieon_reference_genome
+SAMPLE=$left_fq
+SAMPLE2=$right_fq
+GROUP_NAME="test_group"
+SAMPLE_NAME="test"
+PLATFORM=ILLUMINA
+READ_LENGTH_MINUS_1=100
+SORTED_BAM='/home/dnanexus/output'
+
 
 # resources folder will not exist on worker, so removed here.
 
@@ -25,9 +41,14 @@ export PATH="$SENTIEON_BIN_DIR:$PATH"
 #tar xzvf quick_start.tar.gz 
 #sh sentieon_quickstart.sh &
 
-sentieon STAR --runThreadN NUMBER_THREADS --genomeDir STAR_REFERENCE \
-    --readFilesIn SAMPLE SAMPLE2 --readFilesCommand "zcat" \
+# echo $NUMBER_THREADS
+# echo $PLATFORM
+# stat $STAR_REFERENCE
+# stat $sample
+#for sample in $(less rna_samples):
+sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
+    --readFilesIn ${SAMPLE} ${SAMPLE2} --readFilesCommand "zcat" \
     --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outBAMcompression 0 \
-    --outSAMattrRGline ID:GROUP_NAME SM:SAMPLE_NAME PL:PLATFORM \
-    --twopassMode Basic --twopass1readsN -1 --sjdbOverhang READ_LENGTH_MINUS_1 \
-    | sentieon util sort -r REFERENCE -o SORTED_BAM -t NUMBER_THREADS -i -
+    --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
+    --twopassMode Basic --twopass1readsN -1 --sjdbOverhang ${READ_LENGTH_MINUS_1} \
+    | sentieon util sort -r ${REFERENCE} -o SORTED_BAM -t {$NUMBER_THREADS} -i -

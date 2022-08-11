@@ -14,6 +14,7 @@
         "help": "gzipped fastq for R1",
         "class": "file",
         "patterns": ["*.fastq.gz"],
+        "default": {"$dnanexus_link": "file-GFk23qQ4Fp0f28zp1zK2pZ2y"},
         "optional": true
         },
         {
@@ -22,6 +23,7 @@
         "help": "gzipped fastq for R2",
         "class": "file",
         "patterns": ["*.fastq.gz"],
+        "default": {"$dnanexus_link":"file-GFk23y04Fp0Xz0BX0K7G85yP"},
         "optional": true
         },
         {
@@ -30,6 +32,16 @@
         "help": "tarballed sentieon",
         "class": "file",
         "patterns": ["sentieon-genomics-*.tar.gz"],
+        "default": {"$dnanexus_link": "file-GFbv1x841V8V2zFP8vKf37QZ"}, 
+        "optional": false
+        },
+        {
+        "name": "sentieon_reference_genome",
+        "label": "reference_genome",
+        "help": "RNA GRCh38 reference genome",
+        "class": "file",
+        "patterns": ["*.tar.gz"],
+        "default": {"$dnanexus_link": "file-G856YbQ4b25fb2Pk5VXXgVgG"}, 
         "optional": false
         }
     ],
