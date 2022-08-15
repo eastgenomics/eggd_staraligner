@@ -36,12 +36,21 @@
         "optional": false
         },
         {
-        "name": "sentieon_reference_genome",
-        "label": "reference_genome",
-        "help": "RNA GRCh38 reference genome",
+        "name": "genome_indexes",
+        "label": "genome_indexes",
+        "help": "Genomes indexes",
         "class": "file",
-        "patterns": ["*.tar.gz"],
-        "default": {"$dnanexus_link": "file-G856YbQ4b25fb2Pk5VXXgVgG"}, 
+        "patterns": ["*"],
+        "default": {"$dnanexus_link": "file-GFq2PJ846G2F120Y80qFVJQb"}, 
+        "optional": false
+        },
+        {
+        "name": "reference_genome",
+        "label": "reference_genome",
+        "help": "GRCh38 reference genome FASTA + index",
+        "class": "file",
+        "patterns": ["*"],
+        "default": {"$dnanexus_link": "file-GFGY3Bj4kj419YZq4bK0fg2x"}, 
         "optional": false
         }
     ],
@@ -84,7 +93,7 @@
       "aws:eu-central-1": {
         "systemRequirements": {
           "*": {
-            "instanceType": "mem1_ssd1_v2_x4"
+            "instanceType": "mem1_ssd2_v2_x16"
           }
         }
       }

@@ -6,7 +6,13 @@ dx-download-all-inputs # download inputs from json
 #dx download "$left_fastq" -o left_fastq
 #dx download "$right_fastq" -o right_fastq
 
+# resources folder will not exist on worker, so removed here.
+mkdir /home/dnanexus/genomeDir
+mkdir /home/dnanexus/reference_genome
+
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local # unpack tar
+tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir #transcirpt data from that release of gencode
+tar xvzf /home/dnanexus/in/reference_genome/*tar.gz -C /home/dnanexus/reference_genome
 
 source /home/dnanexus/license_setup.sh # run license setup script
 
@@ -16,39 +22,24 @@ SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 
 export PATH="$SENTIEON_BIN_DIR:$PATH"
 
-NUMBER_THREADS=1
-echo $right_fq
-echo $sentieon_reference_genome
-STAR_REFERENCE=$sentieon_reference_genome
-REFERENCE=$sentieon_reference_genome
-SAMPLE=$left_fq
-SAMPLE2=$right_fq
+
+
+NUMBER_THREADS=4
+export STAR_REFERENCE=/home/dnanexus/genomeDir/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/ # Reference transcripts
+echo $STAR_REFERENCE
+export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
+echo $REFERENCE
+SAMPLE=/home/dnanexus/in/left_fq/*.fastq.gz
+SAMPLE2=/home/dnanexus/in/right_fq/*.fastq.gz
 GROUP_NAME="test_group"
 SAMPLE_NAME="test"
 PLATFORM=ILLUMINA
-READ_LENGTH_MINUS_1=100
+READ_LENGTH_MINUS_1=150
 SORTED_BAM='/home/dnanexus/output'
 
-
-# resources folder will not exist on worker, so removed here.
-
-# Quick start package has
-
-#   sentieon_quickstart.sh: the sample shell script that drives the entire pipeline.
-#   reference: a directory that contains human genome reference files and database files of known SNP sites.
-#   FASTQ files: sample sequence files.
-
-#tar xzvf quick_start.tar.gz 
-#sh sentieon_quickstart.sh &
-
-# echo $NUMBER_THREADS
-# echo $PLATFORM
-# stat $STAR_REFERENCE
-# stat $sample
-#for sample in $(less rna_samples):
 sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --readFilesIn ${SAMPLE} ${SAMPLE2} --readFilesCommand "zcat" \
     --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outBAMcompression 0 \
     --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
     --twopassMode Basic --twopass1readsN -1 --sjdbOverhang ${READ_LENGTH_MINUS_1} \
-    | sentieon util sort -r ${REFERENCE} -o SORTED_BAM -t {$NUMBER_THREADS} -i -
+    | output sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
