@@ -74,6 +74,16 @@
           "*"
         ],
         "help": ""
+      },
+      {
+        "name": "chimeric_junctions",
+        "label": "Chimeric.out.junction file",
+        "class": "file",
+        "optional": true,
+        "patterns": [
+          "*"
+        ],
+        "help": ""
       }
     ],
     "runSpec": {
