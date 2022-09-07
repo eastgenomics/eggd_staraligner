@@ -9,6 +9,8 @@ dx-download-all-inputs # download inputs from json
 # resources folder will not exist on worker, so removed here.
 mkdir /home/dnanexus/genomeDir
 mkdir /home/dnanexus/reference_genome
+mkdir -p /home/dnanexus/out/output_bam
+mkdir /home/dnanexus/out/output_bam_bai
 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local # unpack tar
 tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir #transcirpt data from that release of gencode
@@ -24,8 +26,8 @@ export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 
 
-NUMBER_THREADS=4
-export STAR_REFERENCE=/home/dnanexus/genomeDir/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/ # Reference transcripts
+NUMBER_THREADS=32
+export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 echo $STAR_REFERENCE
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
 echo $REFERENCE
@@ -34,12 +36,17 @@ SAMPLE2=/home/dnanexus/in/right_fq/*.fastq.gz
 GROUP_NAME="test_group"
 SAMPLE_NAME="test"
 PLATFORM=ILLUMINA
-READ_LENGTH_MINUS_1=150
-SORTED_BAM='/home/dnanexus/output'
+READ_LENGTH_MINUS_1=100
+SORTED_BAM='/home/dnanexus/out/bam_file'
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --readFilesIn ${SAMPLE} ${SAMPLE2} --readFilesCommand "zcat" \
     --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outBAMcompression 0 \
     --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
     --twopassMode Basic --twopass1readsN -1 --sjdbOverhang ${READ_LENGTH_MINUS_1} \
-    | output sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
+    | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
+
+mv /home/dnanexus/out/bam_file /home/dnanexus/out/output_bam
+mv /home/dnanexus/out/bam_file.bai /home/dnanexus/out/output_bam_bai
+
+dx-upload-all-outputs
