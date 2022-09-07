@@ -44,6 +44,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outBAMcompression 0 \
     --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
     --twopassMode Basic --twopass1readsN -1 --sjdbOverhang ${READ_LENGTH_MINUS_1} \
+    --chimOutType Junctions \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 mv /home/dnanexus/out/bam_file /home/dnanexus/out/output_bam
