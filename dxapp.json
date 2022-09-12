@@ -9,22 +9,10 @@
     },
     "inputSpec": [
         {
-        "name": "left_fq",
-        "label": "left_fq",
-        "help": "gzipped fastq for R1",
-        "class": "file",
-        "patterns": ["*.fastq.gz"],
-        "default": {"$dnanexus_link": "file-GFk23qQ4Fp0f28zp1zK2pZ2y"},
-        "optional": true
-        },
-        {
-        "name": "right_fq",
-        "label": "right_fq",
-        "help": "gzipped fastq for R2",
-        "class": "file",
-        "patterns": ["*.fastq.gz"],
-        "default": {"$dnanexus_link":"file-GFk23y04Fp0Xz0BX0K7G85yP"},
-        "optional": true
+          "name": "fastqs",
+          "label": "fastq files",
+          "help": "fastq files that need concatenating",
+          "class": "array:file"
         },
         {
         "name": "sentieon_tar",
@@ -84,6 +72,18 @@
           "*"
         ],
         "help": ""
+      },
+      {
+        "name": "R1",
+        "label": "Concatenated R1 fastq",
+        "help": "The resulting concatenated file.",
+        "class": "file"
+      },
+      {
+        "name": "R2",
+        "label": "Concatenated R2 fastq",
+        "help": "The resulting concatenated 2nd file.",
+        "class": "file"
       }
     ],
     "runSpec": {

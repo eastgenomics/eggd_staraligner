@@ -3,34 +3,24 @@
 set -exo pipefail #if any part goes wrong, job will fail
 
 dx-download-all-inputs # download inputs from json
-#dx download "$left_fastq" -o left_fastq
-#dx download "$right_fastq" -o right_fastq
-
-# path2fastqs=project-GFfV0qQ42QQVf6VX12zxxvx3:/eggd_staraligner/test_fastqs
-
-# for sample in $(dx ls ${path2fastqs}/*_L001_R1_001.fastq.gz);do echo $sample |  cut -d '_' -f 1 | grep -v Undetermined;done > rna_samples
-
-# for sample in $(less rna_samples);
-# do dx run applet-G91YBp84fVkjv3GyK2219y22 \
-# -ifiles=${path2fastqs}/${sample}*_L001_R1_001.fastq.gz \
-# -ifiles=${path2fastqs}/${sample}*_L002_R1_001.fastq.gz \
-# -ifiles2=${path2fastqs}/${sample}*_L001_R2_001.fastq.gz \
-# -ifiles2=${path2fastqs}/${sample}*_L002_R2_001.fastq.gz \
-# -ioutput_filename=${sample}_R1_concat.fastq.gz \
-# -ioutput_filename2=${sample}_R2_concat.fastq.gz \
-# --destination=/output/concatenated_fastqs -y;
-# done
 
 # resources folder will not exist on worker, so removed here.
+mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
 mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
+mkdir -p /home/dnanexus/out/R1/
+mkdir -p /home/dnanexus/out/R2/
 
+# Unpack tarred files 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local # unpack tar
 tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir #transcirpt data from that release of gencode
 tar xvzf /home/dnanexus/in/reference_genome/*tar.gz -C /home/dnanexus/reference_genome
+
+# Move all the fastqs from subdirectories into one directory
+find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
 
 source /home/dnanexus/license_setup.sh # run license setup script
 
@@ -41,19 +31,40 @@ SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 
+# Concatenate the R1 and R2 files over multiple lanes into one file
+cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
+R1=($(ls *R1*))
+R2=($(ls *R2*))
 
+# check R1 and R2 are paired correctly, for each R1 is there a matching R2
+# check that there are the same number of files in each directory
+
+sample_name=$(echo $R1[0] | cut -d '_' -f 1)
+
+
+for i in "${!R1[@]}"; do
+  cat "${R1[$i]}" >> /home/dnanexus/out/R1/"${sample_name}_R1_concat.fastq.gz"
+done
+
+for i in "${!R2[@]}"; do
+  cat "${R2[$i]}" >> /home/dnanexus/out/R2/"${sample_name}_R2_concat.fastq.gz"
+done
+
+cd /home/dnanexus
+
+# Run STAR-aligner
 NUMBER_THREADS=32
 export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 echo $STAR_REFERENCE
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
 echo $REFERENCE
-SAMPLE=/home/dnanexus/in/left_fq/*.fastq.gz
-SAMPLE2=/home/dnanexus/in/right_fq/*.fastq.gz
+SAMPLE=/home/dnanexus/out/R1/${sample_name}_R1_concat.fastq.gz
+SAMPLE2=/home/dnanexus/out/R2/${sample_name}_R2_concat.fastq.gz
 GROUP_NAME="test_group"
-SAMPLE_NAME="test"
+SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=100
-SORTED_BAM='/home/dnanexus/out/bam_file.bam'
+SORTED_BAM="/home/dnanexus/out/${sample_name}.bam"
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --readFilesIn ${SAMPLE} ${SAMPLE2} --readFilesCommand "zcat" \
@@ -65,8 +76,8 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --chimOutJunctionFormat 1 \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
-mv /home/dnanexus/out/bam_file.bam /home/dnanexus/out/output_bam
-mv /home/dnanexus/out/bam_file.bam.bai /home/dnanexus/out/output_bam_bai
+mv /home/dnanexus/out/${sample_name}.bam /home/dnanexus/out/output_bam
+mv /home/dnanexus/out/${sample_name}.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions
 
 dx-upload-all-outputs
