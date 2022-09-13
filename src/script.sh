@@ -36,8 +36,62 @@ cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
 R1=($(ls *R1*))
 R2=($(ls *R2*))
 
+### Tests
+# Check that there are the same number of files in each list
+# There should be an equal number of R1 and R2 files
+if [[ ${#R1[@]} -ne ${#R2[@]} ]]
+  then echo "The number of R1 and R2 files for this sample are not equal"
+  exit 1
+fi
+
 # check R1 and R2 are paired correctly, for each R1 is there a matching R2
-# check that there are the same number of files in each directory
+# Create test arrays that are equal to the arrays for R1 and R2
+R1_test=${R1[@]}
+R2_test=${R[@]}
+
+# Define strings to remove from file name in test arrays
+to_cut_R1="R1"
+to_cut_R2="R2"
+cut_fastq=".fastq.gz"
+
+# Remove "R1" and "R2" from all file names
+for i in "${!R1_test[@]}"; do
+  R1_test[$i]=${R1_test[$i]//$to_cut_R1/};
+  R1_test[$i]=${R1_test[$i]//$cut_fastq/}
+done
+
+for i in "${!R2_test[@]}"; do
+  R2_test[$i]=${R2_test[$i]//$to_cut_R2/};
+done
+
+containsElement () {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+for i in "${R1_test[@]}"; do
+  if ! printf '%s\0' "${R2_test[@]}" | grep -Fxqz -- "${R1_test[$i]}"; then
+    echo "${R2_test[@]}"
+    echo "${R1_test[$i]}"
+    echo "oops"
+  fi
+done
+
+
+for i in "${R1_test[@]}"; do
+  if [[ ! containsElement "${R1_test[$i]}" "${R2_test[@]}" ]];
+  then echo "yikes"
+  fi
+done
+
+# Test that when "R1" and "R2" are removed the two arrays have indentical file names
+for i in "${R1_test[@]}"; do
+  if [[ ! "${R2_test[@]}" =~ "${R1_test[$i]}" ]];
+  then echo "Each R1 FASTQ does not appear to have a matching R2 FASTQ"
+  exit 1
+  fi
+done
 
 sample_name=$(echo $R1[0] | cut -d '_' -f 1)
 
