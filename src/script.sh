@@ -43,7 +43,7 @@ if [[ ${#R1[@]} -ne ${#R2[@]} ]]
   exit 1
 fi
 
-# check R1 and R2 are paired correctly, for each R1 is there a matching R2
+# Check R1 and R2 are paired correctly; for each R1 there should be a matching R2
 # Create test arrays that are equal to the arrays for R1 and R2
 R1_test=${R1[@]}
 R2_test=${R2[@]}
@@ -72,7 +72,7 @@ for i in "${!R1_test[@]}"; do
   fi
 done
 
-# Extract sample name
+# Extract sample name from input FASTQ file names
 sample_name=$(echo $R1[0] | cut -d '_' -f 1)
 
 # Concatenate all R1 files into single concatenated R1 file
@@ -90,9 +90,7 @@ cd /home/dnanexus
 # Run STAR-aligner
 NUMBER_THREADS=32
 export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
-echo $STAR_REFERENCE
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
-echo $REFERENCE
 SAMPLE=/home/dnanexus/out/R1/${sample_name}_R1_concat.fastq.gz
 SAMPLE2=/home/dnanexus/out/R2/${sample_name}_R2_concat.fastq.gz
 GROUP_NAME="test_group"
@@ -111,6 +109,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
     --chimOutJunctionFormat 1 \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
+# Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions
