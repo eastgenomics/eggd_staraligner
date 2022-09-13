@@ -47,9 +47,8 @@
         "name": "output_bam",
         "label": "Output bam file from STAR aligner",
         "class": "file",
-        "optional": true,
         "patterns": [
-          "*"
+          "*bam"
         ],
         "help": ""
       },
@@ -57,9 +56,8 @@
         "name": "output_bam_bai",
         "label": "Output bam.bai file from STAR aligner",
         "class": "file",
-        "optional": true,
         "patterns": [
-          "*"
+          "*bam.bai"
         ],
         "help": ""
       },
@@ -76,12 +74,14 @@
       {
         "name": "R1",
         "label": "Concatenated R1 fastq",
-        "class": "file"
+        "class": "file",
+        "help": ""
       },
       {
         "name": "R2",
         "label": "Concatenated R2 fastq",
-        "class": "file"
+        "class": "file",
+        "help": ""
       }
     ],
     "runSpec": {
