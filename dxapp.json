@@ -11,13 +11,13 @@
         {
           "name": "fastqs",
           "label": "fastq files",
-          "help": "fastq files that need concatenating",
+          "help": "fastq files to run STAR aligner on. This will take multiple files for R1 and R2, concatenate them and then run STAR aligner",
           "class": "array:file"
         },
         {
         "name": "sentieon_tar",
         "label": "sentieon_tar",
-        "help": "tarballed sentieon",
+        "help": "Tarballed Sentieon package. Currently defaults to use Sentieon 202112.05",
         "class": "file",
         "patterns": ["sentieon-genomics-*.tar.gz"],
         "default": {"$dnanexus_link": "file-GFbv1x841V8V2zFP8vKf37QZ"}, 
@@ -26,7 +26,7 @@
         {
         "name": "genome_indexes",
         "label": "genome_indexes",
-        "help": "Genomes indexes",
+        "help": "Tarballed genome indexes for reference genome",
         "class": "file",
         "patterns": ["*"],
         "default": {"$dnanexus_link": "file-GGFbbG042QQzyV6kJ507B9Zy"}, 
@@ -35,7 +35,7 @@
         {
         "name": "reference_genome",
         "label": "reference_genome",
-        "help": "GRCh38 reference genome FASTA + index",
+        "help": "tarballed GRCh38 reference genome FASTA + index",
         "class": "file",
         "patterns": ["*"],
         "default": {"$dnanexus_link": "file-Fy4j2G04qB6zQK885B5Q8Pqp"}, 
@@ -45,7 +45,7 @@
     "outputSpec": [
       {
         "name": "output_bam",
-        "label": "Output bam file",
+        "label": "Output bam file from STAR aligner",
         "class": "file",
         "optional": true,
         "patterns": [
@@ -55,7 +55,7 @@
       },
       {
         "name": "output_bam_bai",
-        "label": "Output bam.bai file",
+        "label": "Output bam.bai file from STAR aligner",
         "class": "file",
         "optional": true,
         "patterns": [
@@ -76,13 +76,11 @@
       {
         "name": "R1",
         "label": "Concatenated R1 fastq",
-        "help": "The resulting concatenated file.",
         "class": "file"
       },
       {
         "name": "R2",
         "label": "Concatenated R2 fastq",
-        "help": "The resulting concatenated 2nd file.",
         "class": "file"
       }
     ],
