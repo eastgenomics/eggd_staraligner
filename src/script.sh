@@ -11,12 +11,12 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
-mkdir -p /home/dnanexus/out/R1/
-mkdir -p /home/dnanexus/out/R2/
+mkdir /home/dnanexus/out/R1/
+mkdir /home/dnanexus/out/R2/
 
 # Unpack tarred files 
-tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local # unpack tar
-tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir #transcirpt data from that release of gencode
+tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
+tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir
 tar xvzf /home/dnanexus/in/reference_genome/*tar.gz -C /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
@@ -29,7 +29,6 @@ export SENTIEON_INSTALL_DIR=/usr/local/sentieon-genomics-*
 SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 
 export PATH="$SENTIEON_BIN_DIR:$PATH"
-
 
 # Concatenate the R1 and R2 files over multiple lanes into one file
 cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
@@ -65,7 +64,7 @@ for i in "${!R2_test[@]}"; do
   R2_test[$i]=${R2_test[$i]//$cut_fastq/}
 done
 
-# Test that when "R1" and "R2" are removed the two arrays have indentical file names
+# Test that when "R1" and "R2" are removed the two arrays have identical file names
 for i in "${!R1_test[@]}"; do
   if [[ ! "${R2_test}" =~ "${R1_test[$i]}" ]];
   then echo "Each R1 FASTQ does not appear to have a matching R2 FASTQ"
