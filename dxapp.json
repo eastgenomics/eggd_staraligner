@@ -11,7 +11,7 @@
         {
           "name": "fastqs",
           "label": "fastq files",
-          "help": "fastq files to run STAR aligner on. This will take multiple files for R1 and R2, concatenate them and then run STAR aligner",
+          "help": "fastq files to run STAR aligner on",
           "class": "array:file"
         },
         {
@@ -24,9 +24,9 @@
         "optional": false
         },
         {
-        "name": "genome_indexes",
-        "label": "genome_indexes",
-        "help": "Tarballed genome indexes for reference genome",
+        "name": "genome_indices",
+        "label": "genome_indices",
+        "help": "Tarballed genome indices for reference genome",
         "class": "file",
         "patterns": ["*"],
         "default": {"$dnanexus_link": "file-GGFbbG042QQzyV6kJ507B9Zy"}, 
@@ -69,18 +69,6 @@
         "patterns": [
           "*"
         ],
-        "help": ""
-      },
-      {
-        "name": "R1",
-        "label": "Concatenated R1 fastq",
-        "class": "file",
-        "help": ""
-      },
-      {
-        "name": "R2",
-        "label": "Concatenated R2 fastq",
-        "class": "file",
         "help": ""
       }
     ],

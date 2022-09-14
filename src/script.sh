@@ -11,12 +11,12 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
-mkdir /home/dnanexus/out/R1/
-mkdir /home/dnanexus/out/R2/
+mkdir /home/dnanexus/R1/
+mkdir /home/dnanexus/R2/
 
 # Unpack tarred files 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
-tar xvzf /home/dnanexus/in/genome_indexes/*.tar.gz -C /home/dnanexus/genomeDir
+tar xvzf /home/dnanexus/in/genome_indices/*.tar.gz -C /home/dnanexus/genomeDir
 tar xvzf /home/dnanexus/in/reference_genome/*tar.gz -C /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
@@ -91,8 +91,8 @@ cd /home/dnanexus
 NUMBER_THREADS=32
 export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
-SAMPLE=/home/dnanexus/out/R1/${sample_name}_R1_concat.fastq.gz
-SAMPLE2=/home/dnanexus/out/R2/${sample_name}_R2_concat.fastq.gz
+SAMPLE=/home/dnanexus/R1/${sample_name}_R1_concat.fastq.gz
+SAMPLE2=/home/dnanexus/R2/${sample_name}_R2_concat.fastq.gz
 GROUP_NAME="test_group"
 SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
