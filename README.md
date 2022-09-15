@@ -6,7 +6,7 @@ Runs STAR-Aligner to align RNA sequence data to a reference
 ## What inputs are required for this app to run?
 * `--fastqs`: Array of gzipped FASTQs for one sample
 * `--sentieon_tar`: Tarballed Sentieon package. Currently defaults to use Sentieon 202112.05
-* `--genome_indices`: Tarballed genome indices for reference genome. Currently defaults to use indices generated using GENCODE v41 .gtf
+* `--`: Tarballed genome indices for reference genome. Currently defaults to use indices generated using GENCODE v41 .gtf
 * `--reference_genome`: Tarballed GRCh38 reference genome FASTA + index. Current defaults to use GRCh38.no_alt_analysis_set_chr_mask21.fasta-index.tar.gz in 001_Reference
 
 ## How does this app work?
