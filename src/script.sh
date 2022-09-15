@@ -77,12 +77,12 @@ sample_name=$(echo $R1[0] | cut -d '_' -f 1)
 
 # Concatenate all R1 files into single concatenated R1 file
 for i in "${!R1[@]}"; do
-  cat "${R1[$i]}" >> /home/dnanexus/out/R1/"${sample_name}_R1_concat.fastq.gz"
+  cat "${R1[$i]}" >> /home/dnanexus/R1/"${sample_name}_R1_concat.fastq.gz"
 done
 
 # Concatenate all R2 files into single concatenated R2 file
 for i in "${!R2[@]}"; do
-  cat "${R2[$i]}" >> /home/dnanexus/out/R2/"${sample_name}_R2_concat.fastq.gz"
+  cat "${R2[$i]}" >> /home/dnanexus/R2/"${sample_name}_R2_concat.fastq.gz"
 done
 
 cd /home/dnanexus
@@ -93,7 +93,7 @@ export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
 SAMPLE=/home/dnanexus/R1/${sample_name}_R1_concat.fastq.gz
 SAMPLE2=/home/dnanexus/R2/${sample_name}_R2_concat.fastq.gz
-GROUP_NAME="test_group"
+GROUP_NAME=${read_group}
 SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=100

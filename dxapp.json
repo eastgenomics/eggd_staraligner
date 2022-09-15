@@ -40,6 +40,15 @@
         "patterns": ["*"],
         "default": {"$dnanexus_link": "file-Fy4j2G04qB6zQK885B5Q8Pqp"}, 
         "optional": false
+        },
+        {
+        "name": "read_group",
+        "label": "read_group",
+        "help": "Identifier for the set of reads that are generated from a single run of a sequencing instrument",
+        "class": "string",
+        "patterns": ["*"],
+        "default": "001", 
+        "optional": false
         }
     ],
     "outputSpec": [
