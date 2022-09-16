@@ -99,11 +99,17 @@ PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=100
 SORTED_BAM="/home/dnanexus/out/${sample_name}.bam"
 
-sentieon STAR --runThreadN ${NUMBER_THREADS} --genomeDir ${STAR_REFERENCE} \
-    --readFilesIn ${SAMPLE} ${SAMPLE2} --readFilesCommand "zcat" \
-    --outStd BAM_Unsorted --outSAMtype BAM Unsorted --outBAMcompression 0 \
+sentieon STAR --runThreadN ${NUMBER_THREADS} \
+    --genomeDir ${STAR_REFERENCE} \
+    --readFilesIn ${SAMPLE} ${SAMPLE2} \
+    --readFilesCommand "zcat" \
+    --outStd BAM_Unsorted \
+    --outSAMtype BAM Unsorted \
+    --outBAMcompression 0 \
     --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
-    --twopassMode Basic --twopass1readsN -1 --sjdbOverhang ${READ_LENGTH_MINUS_1} \
+    --twopassMode Basic \
+    --twopass1readsN -1 \
+    --sjdbOverhang ${READ_LENGTH_MINUS_1} \
     --chimSegmentMin 12 \
     --chimJunctionOverhangMin 8 \
     --chimOutJunctionFormat 1 \
