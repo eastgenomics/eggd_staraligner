@@ -4,7 +4,6 @@ set -exo pipefail #if any part goes wrong, job will fail
 
 dx-download-all-inputs # download inputs from json
 
-# resources folder will not exist on worker, so removed here.
 mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
 mkdir /home/dnanexus/reference_genome
@@ -30,39 +29,36 @@ SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 
 export PATH="$SENTIEON_BIN_DIR:$PATH"
 
-# Concatenate the R1 and R2 files over multiple lanes into one file
 cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
 R1=($(ls *R1*))
 R2=($(ls *R2*))
 
 ### Tests
-# Check that there are the same number of files in each list
+## Check that there are the same number of files in each list
 # There should be an equal number of R1 and R2 files
 if [[ ${#R1[@]} -ne ${#R2[@]} ]]
   then echo "The number of R1 and R2 files for this sample are not equal"
   exit 1
 fi
 
-# Check R1 and R2 are paired correctly; for each R1 there should be a matching R2
-# Create test arrays that are equal to the arrays for R1 and R2
-R1_test=${R1[@]}
-R2_test=${R2[@]}
-
-# Define strings to remove from file name in test arrays
-to_cut_R1="R1"
-to_cut_R2="R2"
-cut_fastq=".fastq.gz"
-
+## Check that each R1 has a matching R2
 # Remove "R1" and "R2" and the file suffix ".fastq.gz" from all file names
-for i in "${!R1_test[@]}"; do
-  R1_test[$i]=${R1_test[$i]//$to_cut_R1/};
-  R1_test[$i]=${R1_test[$i]//$cut_fastq/}
-done
+_trim_fastq_endings () {
+  # Takes array of fastq files with their read number ("R1" or "R2"), 
+  # trims the endings off every file, and returns as an array
+  local fastq_array=("$@")
+  # Define strings to remove from file name in test arrays
+  local read_to_cut=$1
+  cut_fastq=".fastq.gz"
+  for i in "${!fastq_array[@]}"; do
+    fastq_array[$i]=${fastq_array[$i]//$read_to_cut/};
+    fastq_array[$i]=${fastq_array[$i]//$cut_fastq/};
+  done
+  echo ${fastq_array[@]}
+}
 
-for i in "${!R2_test[@]}"; do
-  R2_test[$i]=${R2_test[$i]//$to_cut_R2/};
-  R2_test[$i]=${R2_test[$i]//$cut_fastq/}
-done
+R1_test=$(_trim_fastq_endings "R1" ${R1[@]})
+R2_test=$(_trim_fastq_endings "R2" ${R2[@]})
 
 # Test that when "R1" and "R2" are removed the two arrays have identical file names
 for i in "${!R1_test[@]}"; do
@@ -72,32 +68,35 @@ for i in "${!R1_test[@]}"; do
   fi
 done
 
+### Running
 # Extract sample name from input FASTQ file names
 sample_name=$(echo $R1[0] | cut -d '_' -f 1)
 
-# Concatenate all R1 files into single concatenated R1 file
-for i in "${!R1[@]}"; do
-  cat "${R1[$i]}" >> /home/dnanexus/R1/"${sample_name}_R1_concat.fastq.gz"
-done
+# Convert array of R1 files into comma-separated list of R1 files
+printf -v R1_list ',%s' "${R1[@]}"
+R1_list=${R1_list:1}  # Remove leading comma
 
-# Concatenate all R2 files into single concatenated R2 file
-for i in "${!R2[@]}"; do
-  cat "${R2[$i]}" >> /home/dnanexus/R2/"${sample_name}_R2_concat.fastq.gz"
-done
+# Convert array of R2 files into comma-separated list of R1 files
+printf -v R2_list ',%s' "${R2[@]}"
+R2_list=${R2_list:1}  # Remove leading comma
 
 cd /home/dnanexus
 
+# NUMBER_THREADS input to STAR-aligner needs the number of cores on the server node
+# This can be extracted from the DNAnexus instance type
+INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract instance type
+
 # Run STAR-aligner
-NUMBER_THREADS=32
+NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
-SAMPLE=/home/dnanexus/R1/${sample_name}_R1_concat.fastq.gz
-SAMPLE2=/home/dnanexus/R2/${sample_name}_R2_concat.fastq.gz
+SAMPLE=${R1_list}
+SAMPLE2=${R2_list}
 GROUP_NAME=${read_group}
 SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=100
-SORTED_BAM="/home/dnanexus/out/${sample_name}.bam"
+SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
@@ -116,8 +115,8 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Move output files to /out directory so they will be uploaded
-mv /home/dnanexus/out/${sample_name}.bam /home/dnanexus/out/output_bam
-mv /home/dnanexus/out/${sample_name}.bam.bai /home/dnanexus/out/output_bam_bai
+mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
+mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions
 
 dx-upload-all-outputs
