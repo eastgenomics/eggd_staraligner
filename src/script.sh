@@ -95,7 +95,7 @@ SAMPLE2=${R2_list}
 GROUP_NAME=${read_group}
 SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
-READ_LENGTH_MINUS_1=100
+READ_LENGTH_MINUS_1=99   # 99 is recommended as the default for Illumina instruments
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
