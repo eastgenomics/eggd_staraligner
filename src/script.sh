@@ -89,13 +89,15 @@ INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract ins
 # GROUP_NAME input to STAR-aligner needs the read group information from the fastq
 fq_arr=($(ls *fastq.gz)) # ls command is alphabetically so R1 should be before R2
 
+# Create array of values for lane e.g. L001, L002, L003 etc.
 for i in ${!fq_arr[@]};
     do fq_arr[$i]=$(cut -d'_' -f3 <<<${fq_arr[${i}]});
 done
 
-# Unique values only
+# Filter this array so it contains unique values only
 IFS=" " read -r -a fq_arr <<< "$(tr ' ' '\n' <<< "${fq_arr[@]}" | sort -u | tr '\n' ' ')"
 
+# Check all the fastqs and sort by lane
 _check_for_string () {
     local lane_to_check=$1
     local arr=()
@@ -111,6 +113,7 @@ for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
 
 head file.txt
 
+# Extract read group info for each lane and add to manifest
 while read f; do
     first_fastq=${f%% *}
     chopped=$(zcat $first_fastq | head -n 1 | grep '^@' | cut -d':' -f -4)
