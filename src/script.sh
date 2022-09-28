@@ -87,7 +87,7 @@ R2_list=${R2_list:1}  # Remove leading comma
 INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract instance type
 
 # GROUP_NAME input to STAR-aligner needs the read group information from the fastq
-fq_arr=($(ls *fastq.gz))
+fq_arr=($(ls *fastq.gz)) # ls command is alphabetically so R1 should be before R2
 
 for i in ${!fq_arr[@]};
     do fq_arr[$i]=$(cut -d'_' -f3 <<<${fq_arr[${i}]});
