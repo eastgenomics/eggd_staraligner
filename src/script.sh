@@ -80,11 +80,51 @@ R1_list=${R1_list:1}  # Remove leading comma
 printf -v R2_list ',%s' "${R2[@]}"
 R2_list=${R2_list:1}  # Remove leading comma
 
-cd /home/dnanexus
+
 
 # NUMBER_THREADS input to STAR-aligner needs the number of cores on the server node
 # This can be extracted from the DNAnexus instance type
 INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract instance type
+
+# GROUP_NAME input to STAR-aligner needs the read group information from the fastq
+fq_arr=($(ls *fastq.gz))
+
+for i in ${!fq_arr[@]};
+    do fq_arr[$i]=$(cut -d'_' -f3 <<<${fq_arr[${i}]});
+done
+
+# Unique values only
+IFS=" " read -r -a fq_arr <<< "$(tr ' ' '\n' <<< "${fq_arr[@]}" | sort -u | tr '\n' ' ')"
+
+_check_for_string () {
+    local lane_to_check=$1
+    local arr=()
+    arr=($(ls *fastq.gz))
+    for fq in ${arr[@]}; do
+        if [[ ${fq} == *$lane_to_check* ]];
+            then echo ${fq}
+        fi
+    done
+}
+
+for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
+
+head file.txt
+
+while read f; do
+    first_fastq=${f%% *}
+    chopped=$(zcat $first_fastq | head -n 1 | grep '^@' | cut -d':' -f -4)
+    echo $f $chopped >> newfile.tsv
+done < file.txt
+
+head newfile.tsv
+
+# Replace spaces with tabs
+tr " " "\t" < newfile.tsv > manifest.tsv
+
+head manifest.tsv
+
+cd /home/dnanexus
 
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
@@ -92,7 +132,7 @@ export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
 SAMPLE=${R1_list}
 SAMPLE2=${R2_list}
-GROUP_NAME=${read_group}
+# GROUP_NAME=cut=${first_line%% *}
 SAMPLE_NAME=${sample_name}
 PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=99   # 99 is recommended as the default for Illumina instruments
@@ -100,12 +140,13 @@ SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
-    --readFilesIn ${SAMPLE} ${SAMPLE2} \
+    #--readFilesIn ${SAMPLE} ${SAMPLE2} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
     --outBAMcompression 0 \
-    --outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
+    --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv"
+    #--outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
     --twopassMode Basic \
     --twopass1readsN -1 \
     --sjdbOverhang ${READ_LENGTH_MINUS_1} \
