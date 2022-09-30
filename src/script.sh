@@ -73,11 +73,11 @@ done
 sample_name=$(echo $R1[0] | cut -d '_' -f 1)
 
 # Convert array of R1 files into comma-separated list of R1 files
-printf -v R1_list ',%s' "${R1[@]}"
+printf -v R1_list ',/home/dnanexus/fastqs/%s' "${R1[@]}"
 R1_list=${R1_list:1}  # Remove leading comma
 
 # Convert array of R2 files into comma-separated list of R1 files
-printf -v R2_list ',%s' "${R2[@]}"
+printf -v R2_list ',/home/dnanexus/fastqs/%s' "${R2[@]}"
 R2_list=${R2_list:1}  # Remove leading comma
 
 
@@ -111,21 +111,14 @@ _check_for_string () {
 
 for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
 
-head file.txt
-
 # Extract read group info for each lane and add to manifest
-while read f; do
-    first_fastq=${f%% *}
-    chopped=$(zcat $first_fastq | head -n 1 | grep '^@' | cut -d':' -f -4)
-    echo $f $chopped >> newfile.tsv
+while IFS=' ' read -r R1 R2; do
+    chopped=$(zgrep -m 1 '^@' $R1 | cut -d':' -f -4 || true)
+    echo '/home/dnanexus/fastqs/'$R1 '/home/dnanexus/fastqs/'$R2 $chopped >> newfile.tsv
 done < file.txt
-
-head newfile.tsv
 
 # Replace spaces with tabs
 tr " " "\t" < newfile.tsv > manifest.tsv
-
-head manifest.tsv
 
 cd /home/dnanexus
 
@@ -143,13 +136,12 @@ SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
-    #--readFilesIn ${SAMPLE} ${SAMPLE2} \
+    --readFilesIn ${SAMPLE} ${SAMPLE2} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
     --outBAMcompression 0 \
-    --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv"
-    #--outSAMattrRGline ID:${GROUP_NAME} SM:${SAMPLE_NAME} PL:${PLATFORM} \
+    --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv" \
     --twopassMode Basic \
     --twopass1readsN -1 \
     --sjdbOverhang ${READ_LENGTH_MINUS_1} \
