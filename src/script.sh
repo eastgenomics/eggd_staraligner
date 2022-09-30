@@ -10,8 +10,6 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
-mkdir /home/dnanexus/R1/
-mkdir /home/dnanexus/R2/
 
 # Unpack tarred files 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
@@ -80,13 +78,11 @@ R1_list=${R1_list:1}  # Remove leading comma
 printf -v R2_list ',/home/dnanexus/fastqs/%s' "${R2[@]}"
 R2_list=${R2_list:1}  # Remove leading comma
 
-
-
 # NUMBER_THREADS input to STAR-aligner needs the number of cores on the server node
 # This can be extracted from the DNAnexus instance type
 INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract instance type
 
-# GROUP_NAME input to STAR-aligner needs the read group information from the fastq
+# --readFilesManifest input to STAR-aligner needs the read group information from the fastq
 fq_arr=($(ls *fastq.gz)) # ls command is alphabetically so R1 should be before R2
 
 # Create array of values for lane e.g. L001, L002, L003 etc.
@@ -112,9 +108,13 @@ _check_for_string () {
 for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
 
 # Extract read group info for each lane and add to manifest
+# Read group includes:
+# ID: read group ID
+# PL: platform, which is set to Illumina as this will use data from Illumina instruments
+# SM: sample name
 while IFS=' ' read -r R1 R2; do
     chopped=$(zgrep -m 1 '^@' $R1 | cut -d':' -f -4 || true)
-    echo '/home/dnanexus/fastqs/'$R1 '/home/dnanexus/fastqs/'$R2 $chopped >> newfile.tsv
+    echo '/home/dnanexus/fastqs/'$R1 '/home/dnanexus/fastqs/'$R2 'ID:'$chopped 'PL:ILLUMINA' 'SM:'$sample_name>> newfile.tsv
 done < file.txt
 
 # Replace spaces with tabs
@@ -124,13 +124,10 @@ cd /home/dnanexus
 
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
-export STAR_REFERENCE=/home/dnanexus/genomeDir/output # Reference transcripts
+export STAR_REFERENCE=/home/dnanexus/genomeDir/home/dnanexus/* # Reference transcripts have been unpacked here
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
 SAMPLE=${R1_list}
 SAMPLE2=${R2_list}
-# GROUP_NAME=cut=${first_line%% *}
-SAMPLE_NAME=${sample_name}
-PLATFORM=ILLUMINA
 READ_LENGTH_MINUS_1=99   # 99 is recommended as the default for Illumina instruments
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 

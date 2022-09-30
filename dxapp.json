@@ -30,7 +30,7 @@
         "help": "Tarballed genome indices for reference genome",
         "class": "file",
         "patterns": ["*"],
-        "default": {"$dnanexus_link": "file-GGFbbG042QQzyV6kJ507B9Zy"}, 
+        "default": {"$dnanexus_link": "file-GGfx8xj4jQ18Xkvq4xy7V6GP"}, 
         "optional": false
         },
         {
