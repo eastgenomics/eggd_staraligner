@@ -150,6 +150,6 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
 # Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
-mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions
+mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}_chimeric.out.junction
 
 dx-upload-all-outputs
