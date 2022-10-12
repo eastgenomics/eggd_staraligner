@@ -29,7 +29,7 @@ export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 # The LD_PRELOAD environment variable can be used to load the jemalloc library in Sentieon at run time.
 # This escapes a repeated error where this fails to load during running of eggd_staraligner
-export LD_PRELOAD=/usr/lib64/libjemalloc.so.2
+export LD_PRELOAD=/usr/local/sentieon-genomics-202112.05/lib/libjemalloc.so.1
 
 cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
 R1=($(ls *R1*))
