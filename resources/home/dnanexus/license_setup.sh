@@ -34,7 +34,7 @@ export SENTIEON_JOB_TAG=$job_tag
 # Error checking: Check license validity before running anything
 ${SENTIEON_INSTALL_DIR}/bin/sentieon licclnt ping -s $SENTIEON_LICENSE 2> >(tee lic_errlog) || error_report "There is an issue with your license. Please contact Sentieon at support@sentieon.com and report your username, org, the billing org you are using to run Sentieon, and the following error message \"$(cat lic_errlog)\". The app will exit now."
 
-#other settings
-export LD_PRELOAD=$SENTIEON_INSTALL_DIR/lib/libjemalloc.so.1
-export MALLOC_CONF=lg_dirty_mult:-1
+# Libjemalloc setup
+sudo apt install libjemalloc2
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 
