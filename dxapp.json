@@ -30,7 +30,7 @@
         "help": "Tarballed genome indices for reference genome",
         "class": "file",
         "patterns": ["*"],
-        "default": {"$dnanexus_link": "file-GJ38Jf04V713vQP2K18X9v0v"}, 
+        "default": {"$dnanexus_link": "file-GJ3GJfQ4G7P65QP7J64KQVvv"}, 
         "optional": false
         },
         {
@@ -39,7 +39,7 @@
         "help": "tarballed GRCh38 reference genome FASTA + index",
         "class": "file",
         "patterns": ["*"],
-        "default": {"$dnanexus_link": "file-Fy4j2G04qB6zQK885B5Q8Pqp"}, 
+        "default": {"$dnanexus_link": "file-GFGY3Bj4kj419YZq4bK0fg2x"}, 
         "optional": false
         }
     ],
