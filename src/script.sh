@@ -10,6 +10,7 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
+mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
@@ -151,5 +152,6 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
+mv /home/dnanexus/Log* /home/dnanexus/out/logs
 
 dx-upload-all-outputs

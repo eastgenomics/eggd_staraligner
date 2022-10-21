@@ -71,6 +71,16 @@
           "*"
         ],
         "help": ""
+      },
+      {
+      "name": "logs",
+      "label": "Sentieon STAR aligner log files",
+      "class": "array:file",
+      "optional": true,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
       }
     ],
     "runSpec": {
