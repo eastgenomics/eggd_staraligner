@@ -9,11 +9,11 @@
     },
     "inputSpec": [
         {
-          "name": "fastqs",
-          "label": "fastq files",
-          "help": "gzipped fastq files to run STAR aligner on",
-          "class": "array:file",
-          "patterns": ["*.fastq.gz", "*.fq.gz"]
+        "name": "fastqs",
+        "label": "fastq files",
+        "help": "gzipped fastq files to run STAR aligner on",
+        "class": "array:file",
+        "patterns": ["*.fastq.gz", "*.fq.gz"]
         },
         {
         "name": "sentieon_tar",

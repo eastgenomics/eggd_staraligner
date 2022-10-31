@@ -146,6 +146,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --chimSegmentMin 12 \
     --chimJunctionOverhangMin 8 \
     --chimOutJunctionFormat 1 \
+    --version 2.7.2b \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Move output files to /out directory so they will be uploaded
