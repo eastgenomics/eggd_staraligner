@@ -41,14 +41,26 @@ if [[ ${#R1[@]} -ne ${#R2[@]} ]]
 fi
 
 ## Check that each R1 has a matching R2
-# Remove "R1" and "R2" and the file suffix ".fastq.gz" from all file names
+# Remove "R1" and "R2" and the file suffix from all file names
 _trim_fastq_endings () {
   # Takes array of fastq files with their read number ("R1" or "R2"), 
   # trims the endings off every file, and returns as an array
   local fastq_array=("$@")
   # Define strings to remove from file name in test arrays
+  # This app can take fastqs with .fq.gz and .fastq.gz suffixes so need to
+  # identify which suffix the input files have
   local read_to_cut=$1
-  cut_fastq=".fastq.gz"
+  if [[ "${fastq_array[1]}" == *".fastq.gz" ]]; then
+    cut_fastq=".fastq.gz"
+    export cut_fastq
+  elif [[ "${fastq_array[1]}" == *".fq.gz" ]]; then
+    cut_fastq=".fq.gz"
+    export cut_fastq
+  else
+    echo "Suffixes of fastq files not recognised as .fq.gz or .fastq.gz"
+    exit 1
+  fi
+  
   for i in "${!fastq_array[@]}"; do
     fastq_array[$i]=${fastq_array[$i]//$read_to_cut/};
     fastq_array[$i]=${fastq_array[$i]//$cut_fastq/};
@@ -84,7 +96,7 @@ R2_list=${R2_list:1}  # Remove leading comma
 INSTANCE=$(dx describe --json $DX_JOB_ID | jq -r '.instanceType')  # Extract instance type
 
 # --readFilesManifest input to STAR-aligner needs the read group information from the fastq
-fq_arr=($(ls *fastq.gz)) # ls command is alphabetical so R1 should be before R2
+fq_arr=($(ls *$cut_fastq)) # ls command is alphabetical so R1 should be before R2
 
 # Create array of values for lane e.g. L001, L002, L003 etc.
 for i in ${!fq_arr[@]};
@@ -98,7 +110,7 @@ IFS=" " read -r -a fq_arr <<< "$(tr ' ' '\n' <<< "${fq_arr[@]}" | sort -u | tr '
 _check_for_string () {
     local lane_to_check=$1
     local arr=()
-    arr=($(ls *fastq.gz))
+    arr=($(ls *$cut_fastq))
     for fq in ${arr[@]}; do
         if [[ ${fq} == *$lane_to_check* ]];
             then echo ${fq}
