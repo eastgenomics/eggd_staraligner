@@ -6,6 +6,7 @@ dx-download-all-inputs # download inputs from json
 
 mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
+mkdir /home/dnanexus/genome_lib
 mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
@@ -13,9 +14,14 @@ mkdir /home/dnanexus/out/chimeric_junctions
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
+tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus/genome_lib
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
-tar xvzf /home/dnanexus/in/genome_indices/*.tar.gz -C /home/dnanexus/genomeDir
-tar xvzf /home/dnanexus/in/reference_genome/*tar.gz -C /home/dnanexus/reference_genome
+
+# Move genome indices and reference genome to specific folders
+
+mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
+mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
+mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
 find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
@@ -138,12 +144,12 @@ cd /home/dnanexus
 
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
-export STAR_REFERENCE=/home/dnanexus/genomeDir/home/dnanexus/* # Reference transcripts have been unpacked here
-export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome, standard GRCh38
+export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
+export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genom has been moved from the CTAT lib to here
 SAMPLE=${R1_list}
 SAMPLE2=${R2_list}
-READ_LENGTH_MINUS_1=99   # 99 is recommended as the default for Illumina instruments
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
+READ_LENGTH=${read_length} # Use read_length value from input JSON. The default is 150, because this was used in the CTAT library ref genome and genome indices
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
@@ -151,14 +157,32 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
+    --outSAMstrandField intronMotif \
+    --outSAMunmapped Within \
     --outBAMcompression 0 \
     --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv" \
     --twopassMode Basic \
     --twopass1readsN -1 \
-    --sjdbOverhang ${READ_LENGTH_MINUS_1} \
+    --sjdbOverhang ${READ_LENGTH} \
     --chimSegmentMin 12 \
     --chimJunctionOverhangMin 8 \
     --chimOutJunctionFormat 1 \
+    --chimMultimapScoreRange 3 \
+    --chimScoreJunctionNonGTAG -4 \
+    --chimMultimapNmax 20 \
+    --chimNonchimScoreDropMin 10 \
+    --peOverlapNbasesMin 12 \
+    --peOverlapMMp 0.1 \
+    --genomeLoad NoSharedMemory \
+    --outReadsUnmapped None \
+    --alignSJDBoverhangMin 10 \
+    --alignMatesGapMax 100000 \
+    --alignIntronMax 100000 \
+    --alignSJstitchMismatchNmax 5 -1 5 5 \
+    --alignInsertionFlush Right \
+    --alignSplicedMateMapLminOverLmate 0 \
+    --alignSplicedMateMapLmin 30 \
+    --quantMode GeneCounts \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Move output files to /out directory so they will be uploaded

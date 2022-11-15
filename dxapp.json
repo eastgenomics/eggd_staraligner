@@ -17,7 +17,7 @@
         },
         {
         "name": "sentieon_tar",
-        "label": "sentieon_tar",
+        "label": "sentieon tar",
         "help": "Tarballed Sentieon package. Currently defaults to use Sentieon 202112.05",
         "class": "file",
         "patterns": ["sentieon-genomics-*.tar.gz"],
@@ -25,21 +25,20 @@
         "optional": false
         },
         {
-        "name": "genome_indices",
-        "label": "genome_indices",
-        "help": "Tarballed genome indices for reference genome",
-        "class": "file",
+        "name": "read_length",
+        "label": "length of the genomic sequence around the annotated splice junctions",
+        "help": "The length of the genomic sequence around the annotated junction to be used in constructing the splice junctions database. Ideally, this length should be equal to the ReadLength-1, where ReadLength is the length of the reads. The reference genome and genome indices from the CTAT library needs this to be set at 150",
+        "class": "int",
         "patterns": ["*"],
-        "default": {"$dnanexus_link": "file-GJ3GJfQ4G7P65QP7J64KQVvv"}, 
+        "default": 150, 
         "optional": false
         },
         {
-        "name": "reference_genome",
-        "label": "reference_genome",
-        "help": "tarballed GRCh38 reference genome FASTA + index",
+        "name": "genome_lib",
+        "label": "CTAT genome library",
+        "help": "A CTAT genome library, which is a reference file bundle required by Trinity CTAT tools. This contains the genome indices and reference genome that are needed to run Sentieon STAR aligner",
         "class": "file",
-        "patterns": ["*"],
-        "default": {"$dnanexus_link": "file-GFGY3Bj4kj419YZq4bK0fg2x"}, 
+        "default": {"$dnanexus_link": "file-GJfX12j41p4GY5K3PY65VFjj"},
         "optional": false
         }
     ],
