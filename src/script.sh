@@ -17,14 +17,13 @@ mkdir /home/dnanexus/out/logs
 tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus/genome_lib
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
+# Extract CTAT library filename
+lib_dir=$(find /home/dnanexus/genome_lib -type d -name "*" -mindepth 1 -maxdepth 1 | rev | cut -d'/' -f-1 | rev)
+
 # Move genome indices and reference genome to specific folders
-
-echo ${parameters}
-
-
-mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
-mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
-mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
 find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
