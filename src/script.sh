@@ -19,6 +19,9 @@ tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
 # Move genome indices and reference genome to specific folders
 
+echo ${parameters}
+
+
 mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
 mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
 mv /home/dnanexus/genome_lib/*.plug-n-play/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
@@ -155,34 +158,9 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
     --readFilesIn ${SAMPLE} ${SAMPLE2} \
     --readFilesCommand "zcat" \
-    --outStd BAM_Unsorted \
-    --outSAMtype BAM Unsorted \
-    --outSAMstrandField intronMotif \
-    --outSAMunmapped Within \
-    --outBAMcompression 0 \
     --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv" \
-    --twopassMode Basic \
-    --twopass1readsN -1 \
     --sjdbOverhang ${READ_LENGTH} \
-    --chimSegmentMin 12 \
-    --chimJunctionOverhangMin 8 \
-    --chimOutJunctionFormat 1 \
-    --chimMultimapScoreRange 3 \
-    --chimScoreJunctionNonGTAG -4 \
-    --chimMultimapNmax 20 \
-    --chimNonchimScoreDropMin 10 \
-    --peOverlapNbasesMin 12 \
-    --peOverlapMMp 0.1 \
-    --genomeLoad NoSharedMemory \
-    --outReadsUnmapped None \
-    --alignSJDBoverhangMin 10 \
-    --alignMatesGapMax 100000 \
-    --alignIntronMax 100000 \
-    --alignSJstitchMismatchNmax 5 -1 5 5 \
-    --alignInsertionFlush Right \
-    --alignSplicedMateMapLminOverLmate 0 \
-    --alignSplicedMateMapLmin 30 \
-    --quantMode GeneCounts \
+    ${parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Move output files to /out directory so they will be uploaded
