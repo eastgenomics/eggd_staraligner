@@ -13,7 +13,7 @@ Runs STAR-Aligner to align RNA sequence data to a reference
     * `--genomeDir`: this is extracted from the `--genome_lib` input
     * `--readFilesIn`: the app sets this using the files in the `--fastqs` input
     * `--readFilesCommand`: hardcoded in the app as `zcat` as the fastqs have to be .gz compressed
-    * `--readFilesManifest`: this file is generated in the app
+    * `--readFilesManifest`: the manifest file is generated in the app
     * `--sjdbOverhang`: this is set by the input `--read_length`
 
 ## How does this app work?
