@@ -11,6 +11,7 @@ Runs STAR-Aligner to align RNA sequence data to a reference
 * `--parameters`: (string) The parameters with which to run Sentieon's STAR aligner. Should be space-delimated, and in the format `--parameter-name value` e.g. `--alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5`. Has default parameters set if not configured by the user. This input cannot be used to set the following parameters, as they are already set within the app:
     * `--runThreadN`: the app calculates this from the spec of the machine it is running on
     * `--genomeDir`: this is extracted from the `--genome_lib` input
+    * `--readFilesIn`: the app sets this using the files in the `--fastqs` input
     * `--readFilesCommand`: hardcoded in the app as `zcat` as the fastqs have to be .gz compressed
     * `--readFilesManifest`: this file is generated in the app
     * `--sjdbOverhang`: this is set by the input `--read_length`
