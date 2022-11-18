@@ -147,7 +147,7 @@ cd /home/dnanexus
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
-export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genom has been moved from the CTAT lib to here
+export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome has been moved from the CTAT lib to here
 SAMPLE=${R1_list}
 SAMPLE2=${R2_list}
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
