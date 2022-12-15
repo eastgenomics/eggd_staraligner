@@ -11,6 +11,7 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
+mkdir /home/dnanexus/out/output_mark_duplicates_bam
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
@@ -129,6 +130,8 @@ _check_for_string () {
 
 for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
 
+unique_read_groups=$(for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}); done)
+
 # Extract read group info for each lane and add to manifest
 # Read group includes:
 # ID: read group ID
@@ -141,6 +144,20 @@ done < file.txt
 
 # Replace spaces with tabs
 tr " " "\t" < newfile.tsv > manifest.tsv
+
+# STAR can run the aligner with the manifest and the input --readFilesManifest. Future development could implement this,
+# however this version of eggd_staraligner will extract the read groups from the manifest and pass them to the aligner manually.
+
+# Extract newline separated list of read groups from manifest.tsv
+read_group_list=$(while IFS=' ' read -r R1 R2; do
+    lane=$( echo $R1 | cut -d'_' -f3)  # The lanes are not necessarily L001 and L002, so this grabs the lane information from the fastq file name
+    rg=$(grep $lane manifest.tsv | cut -f3-)  # Extract the read group
+    echo "$rg"
+done < file.txt)
+
+# Split the read groups into first and last, so that they can be passed to the --outSAMattrRGline input to the aligner
+first_rg=$(echo "$read_group_list" | cut -d$'\n' -f1)
+last_rg=$(echo "$read_group_list" | cut -d$'\n' -f2)
 
 cd /home/dnanexus
 
@@ -156,18 +173,22 @@ CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
     --readFilesIn ${SAMPLE} ${SAMPLE2} \
+    --outSAMattrRGline ${first_rg} , ${last_rg} \
     --readFilesCommand "zcat" \
-    --readFilesManifest "/home/dnanexus/fastqs/manifest.tsv" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
     --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
     ${parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
+# Take the output bam file and run the STAR command to mark the duplicates. This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
+sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
+
 # Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
+mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam /home/dnanexus/out/output_mark_duplicates_bam
 mv /home/dnanexus/Log* /home/dnanexus/out/logs
 
 dx-upload-all-outputs

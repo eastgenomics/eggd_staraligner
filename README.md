@@ -13,7 +13,8 @@ Runs Sentieon STAR-Aligner to align RNA sequence data to a reference
     * `--genomeDir`: this is extracted from the `--genome_lib` input
     * `--readFilesIn`: the app sets this using the files in the `--fastqs` input
     * `--readFilesCommand`: hardcoded in the app as `zcat` as the fastqs have to be .gz compressed
-    * `--readFilesManifest`: the manifest file is generated in the app
+    * `--readFilesManifest`: the manifest file is generated in the app, and the app currently is not set up to run with a manifest input
+    * `--outSAMattrRGline`: this is set within the app from the read group info in the fastq files
     * `--sjdbOverhang`: this is set by the input `--ctat_genome_indices_read_length`
     * `--outStd`: this is set in the app to ensure the bam file is the main output
     * `--outSAMtype`: this is set in the app to ensure it outputs a bam file
@@ -22,6 +23,6 @@ Runs Sentieon STAR-Aligner to align RNA sequence data to a reference
 eggd_staraligner takes an input array of fastq.gz files and runs sentieon STAR aligner on the fastqs to align them to the reference genome. 
 
 ## What does this app output?
-eggd_staraligner outputs a .bam and .bam.bai file for the alignment of the sample and a Chimeric.out.junctions file with junction information. It also outputs several Sentieon STAR aligner log files
+eggd_staraligner outputs a .bam and .bam.bai file for the alignment of the sample and a Chimeric.out.junctions file with junction information. It also outputs several Sentieon STAR aligner log files and a .bam file with the duplicate reads marked
 
 ## This app was made by East GLH
