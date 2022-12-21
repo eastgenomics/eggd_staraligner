@@ -89,6 +89,15 @@ for i in "${!R1_test[@]}"; do
   fi
 done
 
+# Test that there are no banned parameters in --parameters input string
+banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest --outSAMattrRGline --sjdbOverhang --outStd --outSAMtype)
+for parameter in ${banned_parameters[@]}; do
+  if [[ "$parameters" == *"$parameter"* ]]; then
+    echo "Ihe parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
+    exit 1
+  fi
+done
+
 ### Running
 # Extract sample name from input FASTQ file names
 sample_name=$(echo $R1[0] | cut -d '_' -f 1)
@@ -130,8 +139,6 @@ _check_for_string () {
 
 for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}) >> file.txt; done
 
-unique_read_groups=$(for L in ${fq_arr[@]}; do echo $(_check_for_string ${L}); done)
-
 # Extract read group info for each lane and add to manifest
 # Read group includes:
 # ID: read group ID
@@ -151,13 +158,15 @@ tr " " "\t" < newfile.tsv > manifest.tsv
 # Extract newline separated list of read groups from manifest.tsv
 read_group_list=$(while IFS=' ' read -r R1 R2; do
     lane=$( echo $R1 | cut -d'_' -f3)  # The lanes are not necessarily L001 and L002, so this grabs the lane information from the fastq file name
-    rg=$(grep $lane manifest.tsv | cut -f3-)  # Extract the read group
+    rg=$(grep _${lane}_ manifest.tsv | cut -f3-)  # Extract the read group
     echo "$rg"
 done < file.txt)
 
-# Split the read groups into first and last, so that they can be passed to the --outSAMattrRGline input to the aligner
-first_rg=$(echo "$read_group_list" | cut -d$'\n' -f1)
-last_rg=$(echo "$read_group_list" | cut -d$'\n' -f2)
+# Convert the read groups into a space-comma-space delimited string so they can be passed to the --outSAMattrRGline input to the aligner
+readarray -t read_groups <<< "$read_group_list"              # Convert to array
+printf -v read_groups_delimited ' , %s' "${read_groups[@]}"  # Convert to space-comma-space delimited string
+read_groups_delimited=${read_groups_delimited:3}             # Remove leading space-comma-space
+echo -e  $read_groups_delimited
 
 cd /home/dnanexus
 
@@ -165,15 +174,13 @@ cd /home/dnanexus
 NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome has been moved from the CTAT lib to here
-SAMPLE=${R1_list}
-SAMPLE2=${R2_list}
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
 CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
-    --readFilesIn ${SAMPLE} ${SAMPLE2} \
-    --outSAMattrRGline ${first_rg} , ${last_rg} \
+    --readFilesIn ${R1_list} ${R2_list} \
+    --outSAMattrRGline ${read_groups_delimited} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
