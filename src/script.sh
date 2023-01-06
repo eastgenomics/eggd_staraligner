@@ -189,7 +189,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Take the output bam file and run the STAR command to mark the duplicates. This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
-sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
+sentieon STAR --runMode inputAlignmentsFromBAM --limitBAMsortRAM 32000000000 --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
 
 # Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
