@@ -23,6 +23,6 @@ Runs Sentieon STAR-Aligner to align RNA sequence data to a reference
 eggd_staraligner takes an input array of fastq.gz files and runs sentieon STAR aligner on the fastqs to align them to the reference genome. 
 
 ## What does this app output?
-eggd_staraligner outputs a .bam and .bam.bai file for the alignment of the sample and a Chimeric.out.junctions file with junction information. It also outputs several Sentieon STAR aligner log files and a .bam file with the duplicate reads marked
+eggd_staraligner outputs a .bam and .bam.bai file for the alignment of the sample and a Chimeric.out.junctions file with junction information. It also outputs several Sentieon STAR aligner log files, a .bam file with the duplicate reads marked, and a corresponding .bam.bai index file.
 
 ## This app was made by East GLH

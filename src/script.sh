@@ -12,6 +12,7 @@ mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
 mkdir /home/dnanexus/out/output_mark_duplicates_bam
+mkdir /home/dnanexus/out/output_mark_duplicates_bam_bai
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
@@ -188,14 +189,19 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     ${parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
-# Take the output bam file and run the STAR command to mark the duplicates. This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
+# Take the output bam file and run the STAR command to mark the duplicates. 
+# This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
+# Generate a .bai index file for the duplicate-marked bam
 sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
+sentieon util index /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam
+
 
 # Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
 mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam /home/dnanexus/out/output_mark_duplicates_bam
+mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam.bai /home/dnanexus/out/output_mark_duplicates_bam_bai
 mv /home/dnanexus/Log* /home/dnanexus/out/logs
 
 dx-upload-all-outputs

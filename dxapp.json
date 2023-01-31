@@ -89,6 +89,15 @@
         "help": ""
       },
       {
+        "name": "output_mark_duplicates_bam_bai",
+        "label": "A bai index file, for the output bam file with duplicate reads marked by STAR",
+        "class": "file",
+        "patterns": [
+          "*.mark_duplicates.star.bam.bai"
+        ],
+        "help": ""
+      },
+      {
       "name": "logs",
       "label": "Sentieon STAR aligner log files",
       "class": "array:file",
