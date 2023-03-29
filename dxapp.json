@@ -39,9 +39,9 @@
         "optional": false
         },
         {
-        "name": "parameters",
+        "name": "opt_parameters",
         "label": "Optional additional parameters to be used by STAR aligner",
-        "help": "The optional additional parameters for STAR aligner. Should be space-delimated, and in the format --parameter-name value e.g. --alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5",
+        "help": "The optional additional parameters for STAR aligner. Should be space-delimited, and in the format --parameter-name value e.g. \"--alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5\"",
         "class": "string",
         "default": "--outBAMcompression 0 --outSAMstrandField intronMotif --outSAMunmapped Within --outReadsUnmapped None --chimSegmentMin 12 --chimJunctionOverhangMin 8 --chimOutJunctionFormat 1 --alignSJDBoverhangMin 10 --alignMatesGapMax 100000 --alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5 --alignInsertionFlush Right --alignSplicedMateMapLminOverLmate 0 --alignSplicedMateMapLmin 30 --chimMultimapScoreRange 3 --chimScoreJunctionNonGTAG -4 --chimMultimapNmax 20 --chimNonchimScoreDropMin 10 --peOverlapNbasesMin 12 --peOverlapMMp 0.1 --genomeLoad NoSharedMemory --twopassMode Basic --quantMode GeneCounts",
         "optional": true
