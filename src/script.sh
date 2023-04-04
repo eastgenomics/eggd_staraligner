@@ -202,6 +202,7 @@ mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
 mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam /home/dnanexus/out/output_mark_duplicates_bam
 mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam.bai /home/dnanexus/out/output_mark_duplicates_bam_bai
-mv /home/dnanexus/Log* /home/dnanexus/out/logs
+for f in Log*; do mv "$f" "${sample_name}.$f"; done
+mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 
 dx-upload-all-outputs
