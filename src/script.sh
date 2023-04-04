@@ -91,7 +91,8 @@ for i in "${!R1_test[@]}"; do
 done
 
 # Test that there are no banned parameters in --opt_parameters input string
-banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest --outSAMattrRGline --sjdbOverhang --outStd --outSAMtype)
+banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest \
+--outSAMattrRGline --sjdbOverhang --outStd --outSAMtype --limitBAMsortRAM)
 for parameter in ${banned_parameters[@]}; do
   if [[ "$opt_parameters" == *"$parameter"* ]]; then
     echo "Ihe parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
@@ -185,6 +186,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
+    --limitBAMsortRAM 32000000000 \
     --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
     ${opt_parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
