@@ -186,7 +186,6 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
-    --limitBAMsortRAM 32000000000 \
     --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
     ${opt_parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
@@ -194,7 +193,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
 # Take the output bam file and run the STAR command to mark the duplicates. 
 # This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
 # Generate a .bai index file for the duplicate-marked bam
-sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
+sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star. --limitBAMsortRAM 50000000000
 sentieon util index /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam
 
 
