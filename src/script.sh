@@ -90,10 +90,11 @@ for i in "${!R1_test[@]}"; do
   fi
 done
 
-# Test that there are no banned parameters in --parameters input string
-banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest --outSAMattrRGline --sjdbOverhang --outStd --outSAMtype)
+# Test that there are no banned parameters in --opt_parameters input string
+banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest \
+--outSAMattrRGline --sjdbOverhang --outStd --outSAMtype --limitBAMsortRAM)
 for parameter in ${banned_parameters[@]}; do
-  if [[ "$parameters" == *"$parameter"* ]]; then
+  if [[ "$opt_parameters" == *"$parameter"* ]]; then
     echo "Ihe parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
     exit 1
   fi
@@ -186,13 +187,13 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
     --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
-    ${parameters} \
+    ${opt_parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 
 # Take the output bam file and run the STAR command to mark the duplicates. 
 # This generates a .mark_duplicates.star.Processed.out.bam file with the duplicates marked
 # Generate a .bai index file for the duplicate-marked bam
-sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star.
+sentieon STAR --runMode inputAlignmentsFromBAM --inputBAMfile ${SORTED_BAM} --bamRemoveDuplicatesType UniqueIdentical --outFileNamePrefix /home/dnanexus/out/${sample_name}.mark_duplicates.star. --limitBAMsortRAM 50000000000
 sentieon util index /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam
 
 
@@ -202,6 +203,7 @@ mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_
 mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
 mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam /home/dnanexus/out/output_mark_duplicates_bam
 mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam.bai /home/dnanexus/out/output_mark_duplicates_bam_bai
-mv /home/dnanexus/Log* /home/dnanexus/out/logs
+for f in Log*; do mv "$f" "${sample_name}.$f"; done
+mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 
 dx-upload-all-outputs
