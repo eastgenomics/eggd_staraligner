@@ -113,7 +113,7 @@
       "file": "src/script.sh",
       "timeoutPolicy": {
         "*": {
-          "hours": 1
+          "hours": 2
         }
       }
     },
