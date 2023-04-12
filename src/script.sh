@@ -101,7 +101,7 @@ banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --r
 --varVCFfile --inputBAMfile)
 for parameter in ${banned_parameters[@]}; do
   if [[ "$opt_parameters" == *"$parameter"* ]]; then
-    echo "Ihe parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
+    echo "The parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
     exit 1
   fi
 done
