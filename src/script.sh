@@ -91,11 +91,17 @@ for i in "${!R1_test[@]}"; do
 done
 
 # Test that there are no banned parameters in --opt_parameters input string
+# genomeFastaFiles, read, VCF, input options are to protect paths and naming in DNAnexus
+# chain files locked because liftover will either not be needed or will be done before running
+# some out* parameters added to stop interference with DNAnexus-controlled output file management
 banned_parameters=(--runThreadN --genomeDir --readFilesIn --readFilesCommand --readFilesManifest \
---outSAMattrRGline --sjdbOverhang --outStd --outSAMtype --limitBAMsortRAM)
+--sysShell --genomeFastaFiles --genomeChainFiles --genomeConsensusFile --parametersFiles \
+--outSAMattrRGline --sjdbOverhang --outStd --outSAMtype --limitBAMsortRAM --outFileNamePrefix --outTmpDir \
+--readFilesPrefix --readFilesIn --readFilesCommand --readNameSeparator --readFiles --readFilesType \
+--varVCFfile --inputBAMfile)
 for parameter in ${banned_parameters[@]}; do
   if [[ "$opt_parameters" == *"$parameter"* ]]; then
-    echo "Ihe parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
+    echo "The parameter ${parameter} was set as an input. This parameter is set within the app and cannot be set as an input. Please repeat without this parameter"
     exit 1
   fi
 done
