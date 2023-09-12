@@ -39,8 +39,8 @@ SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
-R1=($(ls *R1*))
-R2=($(ls *R2*))
+R1=($(ls *_R1_*))
+R2=($(ls *_R2_*))
 
 ### Tests
 ## Check that there are the same number of files in each list
