@@ -39,8 +39,8 @@ SENTIEON_BIN_DIR=$(echo $SENTIEON_INSTALL_DIR/bin)
 export PATH="$SENTIEON_BIN_DIR:$PATH"
 
 cd /home/dnanexus/fastqs  # Move into fastqs directory to list fastqs
-R1=($(ls *R1*))
-R2=($(ls *R2*))
+R1=($(ls *_R1_*))
+R2=($(ls *_R2_*))
 
 ### Tests
 ## Check that there are the same number of files in each list
@@ -79,8 +79,8 @@ _trim_fastq_endings () {
   echo ${fastq_array[@]}
 }
 
-R1_test=$(_trim_fastq_endings "R1" ${R1[@]})
-R2_test=$(_trim_fastq_endings "R2" ${R2[@]})
+R1_test=$(_trim_fastq_endings "_R1_" ${R1[@]})
+R2_test=$(_trim_fastq_endings "_R2_" ${R2[@]})
 
 # Test that when "R1" and "R2" are removed the two arrays have identical file names
 for i in "${!R1_test[@]}"; do
