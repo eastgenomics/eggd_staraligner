@@ -79,8 +79,8 @@ _trim_fastq_endings () {
   echo ${fastq_array[@]}
 }
 
-R1_test=$(_trim_fastq_endings "R1" ${R1[@]})
-R2_test=$(_trim_fastq_endings "R2" ${R2[@]})
+R1_test=$(_trim_fastq_endings "_R1_" ${R1[@]})
+R2_test=$(_trim_fastq_endings "_R2_" ${R2[@]})
 
 # Test that when "R1" and "R2" are removed the two arrays have identical file names
 for i in "${!R1_test[@]}"; do
