@@ -211,8 +211,8 @@ mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam.bai 
 for f in Log*; do mv "$f" "${sample_name}.$f"; done
 mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 
-if [ -f *.chimeric.out.junction ]; then
-  mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
+if [ -f /home/dnanexus/out/${sample_name}.chimeric.out.junction ]; then
+  mv /home/dnanexus/out/${sample_name}.chimeric.out.junction /home/dnanexus/out/chimeric_junctions
 fi
 
 dx-upload-all-outputs
