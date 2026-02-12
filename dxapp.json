@@ -4,6 +4,9 @@
     "summary": "Sentieon STAR aligner",
     "dxapi": "1.0.0",
     "version": "1.0.3",
+    "whatsNew": {
+     "v1.0.3": "Add --outSJtype SJ.out.tab as output file with related --SJfilter* parameters"
+    },
     "inputSpec": [
         {
         "name": "fastqs",
