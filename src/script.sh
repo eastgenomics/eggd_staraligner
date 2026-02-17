@@ -11,6 +11,7 @@ mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
+mkdir /home/dnanexus/out/splice_junctions
 mkdir /home/dnanexus/out/output_mark_duplicates_bam
 mkdir /home/dnanexus/out/output_mark_duplicates_bam_bai
 mkdir /home/dnanexus/out/logs
@@ -214,6 +215,11 @@ mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 if [ -f /home/dnanexus/Chimeric.out.junction ]; then
   echo "chimeric junction file exists"
   mv /home/dnanexus/Chimeric.out.junction /home/dnanexus/out/chimeric_junctions/${sample_name}.chimeric.out.junction
+fi
+
+if [ -f /home/dnanexus/SJ.out.tab ]; then
+  echo "splice junction file exists"
+  mv /home/dnanexus/SJ.out.tab /home/dnanexus/out/splice_junctions/${sample_name}.SJ.out.tab
 fi
 
 dx-upload-all-outputs
