@@ -3,7 +3,10 @@
     "title": "eggd_staraligner",
     "summary": "Sentieon STAR aligner",
     "dxapi": "1.0.0",
-    "version": "1.0.2",
+    "version": "1.0.3",
+    "whatsNew": {
+     "v1.0.3": "Add output splice_junctions file to the app"
+    },
     "inputSpec": [
         {
         "name": "fastqs",
@@ -69,6 +72,16 @@
       {
         "name": "chimeric_junctions",
         "label": "Chimeric.out.junction file",
+        "class": "file",
+        "optional": true,
+        "patterns": [
+          "*"
+        ],
+        "help": ""
+      },
+      {
+        "name": "splice_junctions",
+        "label": "SJ.out.tab file",
         "class": "file",
         "optional": true,
         "patterns": [
