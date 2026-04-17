@@ -6,8 +6,6 @@ dx-download-all-inputs # download inputs from json
 
 mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
-mkdir /home/dnanexus/genome_lib
-mkdir /home/dnanexus/reference_genome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
@@ -15,16 +13,11 @@ mkdir /home/dnanexus/out/splice_junctions
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
-tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus/genome_lib
+tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
 # Extract CTAT library filename
 lib_dir=$(find /home/dnanexus/genome_lib -type d -name "*" -mindepth 1 -maxdepth 1 | rev | cut -d'/' -f-1 | rev)
-
-# Move genome indices and reference genome to specific folders
-mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
-mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
-mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
 find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
@@ -179,8 +172,7 @@ cd /home/dnanexus
 
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
-export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
-export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome has been moved from the CTAT lib to here
+export STAR_REFERENCE=/home/dnanexus/starIndex
 
 #CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
 
