@@ -183,7 +183,7 @@ cd /home/dnanexus
 NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome has been moved from the CTAT lib to here
-SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
+
 #CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
@@ -198,8 +198,9 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
 
 
 # Move output files to /out directory so they will be uploaded
-mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
-mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
+mv /home/dnanexus/out/${sample_name}.Aligned.toTranscriptome.out.bam /home/dnanexus/out/output_bam_alignedtranscriptome
+mv /home/dnanexus/out/${sample_name}.Aligned.toTranscriptome.out.bam.bai /home/dnanexus/out/output_bam_bai_alignedtranscriptome
+
 for f in Log*; do mv "$f" "${sample_name}.$f"; done
 mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 
