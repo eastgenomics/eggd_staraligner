@@ -200,8 +200,6 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
 # Move output files to /out directory so they will be uploaded
 mv /home/dnanexus/out/${sample_name}.star.bam /home/dnanexus/out/output_bam
 mv /home/dnanexus/out/${sample_name}.star.bam.bai /home/dnanexus/out/output_bam_bai
-mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam /home/dnanexus/out/output_mark_duplicates_bam
-mv /home/dnanexus/out/${sample_name}.mark_duplicates.star.Processed.out.bam.bai /home/dnanexus/out/output_mark_duplicates_bam_bai
 for f in Log*; do mv "$f" "${sample_name}.$f"; done
 mv /home/dnanexus/${sample_name}.Log* /home/dnanexus/out/logs
 
