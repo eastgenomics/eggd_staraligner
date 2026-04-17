@@ -6,6 +6,8 @@ dx-download-all-inputs # download inputs from json
 
 mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
+mkdir /home/dnanexus/out/output_bam_alignedtranscriptome
+mkdir /home/dnanexus/out/output_bam_bai_alignedtranscriptome
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
