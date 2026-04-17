@@ -12,8 +12,6 @@ mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/chimeric_junctions
 mkdir /home/dnanexus/out/splice_junctions
-mkdir /home/dnanexus/out/output_mark_duplicates_bam
-mkdir /home/dnanexus/out/output_mark_duplicates_bam_bai
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
