@@ -16,9 +16,6 @@ mkdir /home/dnanexus/out/logs
 tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
-# Extract CTAT library filename
-lib_dir=$(find /home/dnanexus/genome_lib -type d -name "*" -mindepth 1 -maxdepth 1 | rev | cut -d'/' -f-1 | rev)
-
 # Move all the fastqs from subdirectories into one directory
 find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
 
