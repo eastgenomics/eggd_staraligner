@@ -3,9 +3,9 @@
     "title": "eggd_staraligner",
     "summary": "Sentieon STAR aligner",
     "dxapi": "1.0.0",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "whatsNew": {
-     "v1.0.3": "Add output splice_junctions file to the app"
+     "v1.0.4": "Use eggd_staraligner to output Aligned.toTranscriptome.out.bam to be used by RSEM for gene expression quantification"
     },
     "inputSpec": [
         {
