@@ -184,7 +184,7 @@ NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
 export REFERENCE=/home/dnanexus/reference_genome/*.fa # Reference genome has been moved from the CTAT lib to here
 SORTED_BAM="/home/dnanexus/out/${sample_name}.star.bam"
-CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
+#CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
@@ -193,7 +193,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
-    --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
+    #--sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
     ${opt_parameters} \
     | sentieon util sort -r ${REFERENCE} -o ${SORTED_BAM} -t ${NUMBER_THREADS} -i -
 

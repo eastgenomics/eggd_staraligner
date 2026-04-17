@@ -25,15 +25,6 @@
         "optional": false
         },
         {
-        "name": "ctat_genome_indices_read_length",
-        "label": "length of the genomic sequence around the annotated splice junctions",
-        "help": "The length of the genomic sequence around the annotated junction to be used in constructing the splice junctions database. Ideally, this length should be equal to the ReadLength-1, where ReadLength is the length of the reads used in construction of the indices. The reference genome and genome indices from the CTAT library used reads of length 151 bp, so this is the default",
-        "class": "int",
-        "patterns": ["*"],
-        "default": 151, 
-        "optional": false
-        },
-        {
         "name": "genome_lib",
         "label": "CTAT genome library",
         "help": "A CTAT genome library, which is a reference file bundle required by Trinity CTAT tools. This contains the genome indices and reference genome that are needed to run Sentieon STAR aligner",
