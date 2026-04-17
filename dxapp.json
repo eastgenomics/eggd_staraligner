@@ -47,7 +47,7 @@
         "label": "Output bam file from STAR aligner",
         "class": "file",
         "patterns": [
-          "*bam"
+          "Aligned.*bam"
         ],
         "help": ""
       },
@@ -56,7 +56,25 @@
         "label": "Output bam.bai file from STAR aligner",
         "class": "file",
         "patterns": [
-          "*bam.bai"
+          "Aligned.*bam.bai"
+        ],
+        "help": ""
+      },
+      {
+        "name": "output_bam_alignedtranscriptome",
+        "label": "Output bam file with --quantMode TranscriptomeSAM - to be used as input for RSEM",
+        "class": "file",
+        "patterns": [
+          "*Aligned.toTranscriptome.bam"
+        ],
+        "help": ""
+      },
+      {
+        "name": "output_bam_bai_alignedtranscriptome",
+        "label": "Output bam.bai file with --quantMode TranscriptomeSAM - to be used as input for RSEM",
+        "class": "file",
+        "patterns": [
+          "*Aligned.toTranscriptome.bam.bai"
         ],
         "help": ""
       },
@@ -77,24 +95,6 @@
         "optional": true,
         "patterns": [
           "*"
-        ],
-        "help": ""
-      },
-      {
-        "name": "output_mark_duplicates_bam",
-        "label": "The output bam file with duplicate reads marked by STAR",
-        "class": "file",
-        "patterns": [
-          "*.mark_duplicates.star.bam"
-        ],
-        "help": ""
-      },
-      {
-        "name": "output_mark_duplicates_bam_bai",
-        "label": "A bai index file, for the output bam file with duplicate reads marked by STAR",
-        "class": "file",
-        "patterns": [
-          "*.mark_duplicates.star.bam.bai"
         ],
         "help": ""
       },
