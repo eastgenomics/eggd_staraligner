@@ -18,7 +18,7 @@
         {
         "name": "sentieon_tar",
         "label": "sentieon tar",
-        "help": "Tarballed Sentieon package. Currently defaults to use Sentieon 202112.05",
+        "help": "Tarballed Sentieon package. Currently defaults to use Sentieon 202308.03",
         "class": "file",
         "patterns": ["sentieon-genomics-*.tar.gz"],
         "default": {"$dnanexus_link": "file-J0K7q784JpPxYJy7zJPQF7qG"}, 
