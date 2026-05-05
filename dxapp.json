@@ -21,7 +21,7 @@
         "help": "Tarballed Sentieon package. Currently defaults to use Sentieon 202112.05",
         "class": "file",
         "patterns": ["sentieon-genomics-*.tar.gz"],
-        "default": {"$dnanexus_link": "file-GFbv1x841V8V2zFP8vKf37QZ"}, 
+        "default": {"$dnanexus_link": "file-J0K7q784JpPxYJy7zJPQF7qG"}, 
         "optional": false
         },
         {
@@ -29,7 +29,7 @@
         "label": "STAR Index from Treehouse pipeline",
         "help": "STAR Index files from Treehouse pipeline, whith genome indices and rerefence genome files for STAR Aligner.",
         "class": "file",
-        "default": {"$dnanexus_link": "file-J0K7q784JpPxYJy7zJPQF7qG"},
+        "default": {"$dnanexus_link": "file-J7QGpv84KybG3QqPpgZqBPX1"},
         "optional": false
         },
         {
