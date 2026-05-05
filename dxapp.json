@@ -29,7 +29,7 @@
         "label": "STAR Index from Treehouse pipeline",
         "help": "STAR Index files from Treehouse pipeline, whith genome indices and rerefence genome files for STAR Aligner.",
         "class": "file",
-        "default": {"$dnanexus_link": "file-J7QGpv84KybG3QqPpgZqBPX1"},
+        "default": {"$dnanexus_link": "file-J0K7q784JpPxYJy7zJPQF7qG"},
         "optional": false
         },
         {
