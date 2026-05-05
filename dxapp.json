@@ -37,7 +37,7 @@
         "label": "Optional additional parameters to be used by STAR aligner",
         "help": "The optional additional parameters for STAR aligner. Should be space-delimited, and in the format --parameter-name value e.g. \"--alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5\"",
         "class": "string",
-        "default": "--quantMode TranscriptomeSAM --outSAMattributes NH HI AS NM MD --outFilterType BySJout --outFilterMultimapNmax 20 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.04 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --sjdbScore 1 --limitBAMsortRAM 49268954168",
+        "default": "--quantMode TranscriptomeSAM --outSAMattributes NH HI AS NM MD --outFilterType BySJout --outFilterMultimapNmax 20 --outFilterMismatchNmax 999 --outFilterMismatchNoverReadLmax 0.04 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --sjdbScore 1",
         "optional": true
         }
     ],
