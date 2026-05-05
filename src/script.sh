@@ -6,6 +6,7 @@ dx-download-all-inputs # download inputs from json
 
 mkdir /home/dnanexus/fastqs
 mkdir /home/dnanexus/genomeDir
+mkdir /home/dnanexus/genome_lib
 mkdir -p /home/dnanexus/out/output_bam
 mkdir /home/dnanexus/out/output_bam_bai
 mkdir /home/dnanexus/out/output_bam_alignedtranscriptome
@@ -17,6 +18,14 @@ mkdir /home/dnanexus/out/logs
 # Unpack tarred files 
 tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
+
+# Extract CTAT library filename
+lib_dir=$(find /home/dnanexus/genome_lib -type d -name "*" -mindepth 1 -maxdepth 1 | rev | cut -d'/' -f-1 | rev)
+
+# Move genome indices and reference genome to specific folders
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.star.idx/* /home/dnanexus/genomeDir/
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa /home/dnanexus/reference_genome
+mv /home/dnanexus/genome_lib/${lib_dir}/ctat_genome_lib_build_dir/ref_genome.fa.fai /home/dnanexus/reference_genome
 
 # Move all the fastqs from subdirectories into one directory
 find ~/in/fastqs -type f -name "*" -print0 | xargs -0 -I {} mv {} ~/fastqs
@@ -171,7 +180,7 @@ cd /home/dnanexus
 
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
-export STAR_REFERENCE=/home/dnanexus/starIndex
+export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
