@@ -191,7 +191,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
     --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
-    --outFileNamePrefix /home/dnanexus/out/${sample_name}.
+    --outFileNamePrefix /home/dnanexus/out/${sample_name}. \
     ${opt_parameters}
 
 
