@@ -16,7 +16,7 @@ mkdir /home/dnanexus/out/splice_junctions
 mkdir /home/dnanexus/out/logs
 
 # Unpack tarred files 
-tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus
+tar xvzf /home/dnanexus/in/genome_lib/*.tar.gz -C /home/dnanexus/genome_lib
 tar xvzf /home/dnanexus/in/sentieon_tar/sentieon-genomics-*.tar.gz -C /usr/local
 
 # Extract CTAT library filename
