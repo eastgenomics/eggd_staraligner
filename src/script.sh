@@ -181,6 +181,7 @@ cd /home/dnanexus
 # Run STAR-aligner
 NUMBER_THREADS=${INSTANCE##*_x}
 export STAR_REFERENCE=/home/dnanexus/genomeDir # Reference transcripts have been moved from the CTAT lib to here
+CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1=$((${ctat_genome_indices_read_length}-1)) # Use read_length value from input JSON. The default is 151 bp, because that is the read length used in generation of the CTAT genome library
 
 sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --genomeDir ${STAR_REFERENCE} \
@@ -189,6 +190,7 @@ sentieon STAR --runThreadN ${NUMBER_THREADS} \
     --readFilesCommand "zcat" \
     --outStd BAM_Unsorted \
     --outSAMtype BAM Unsorted \
+    --sjdbOverhang ${CTAT_GENOME_INDICES_READ_LENGTH_MINUS_1} \
     ${opt_parameters}
 
 
