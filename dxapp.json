@@ -128,7 +128,12 @@
         "*": {
           "hours": 2
         }
-      }
+      },
+      "assetDepends": [
+        {
+          "id": "record-JB2q8VQ4z0J5JQGqXxvyFkK2"
+        }
+      ]
     },
     "developers":[
       "org-emee_1"
