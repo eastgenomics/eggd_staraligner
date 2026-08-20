@@ -3,9 +3,9 @@
     "title": "eggd_staraligner",
     "summary": "Sentieon STAR aligner",
     "dxapi": "1.0.0",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "whatsNew": {
-     "v1.0.3": "Add output splice_junctions file to the app"
+     "v1.0.4": "Remove apt install, add record for asset and update Ubuntu version"
     },
     "inputSpec": [
         {
